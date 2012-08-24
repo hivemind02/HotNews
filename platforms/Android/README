@@ -1,0 +1,156 @@
+Localization manual / ?¤êµ­??ì§?› ?¤ëª…??
+Developer can edit appspresso project path like "platforms/Android/" that make app name, icon, splash image internationally.
+You can see localization folder example when making new Project and Choose project template "Hello World (localization)".
+And we can provide contents localization support that follows W3C Widget specification.
+If you want to know how to do this, please visit our web site. http://www.appspresso.com
+
+1. Application name
+
+If you want to give a name each-other language then edit "platforms/Android/resources/appName.xml"
+Please see below example. Language code follows ISO 639-1 specification and Android also follows that specification.
+
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+   <app-name>My App</app-name> <!-- Default App Name -->
+   <app-name lang="en">My Application</app-name>
+   <app-name lang="ko">???‘ìš© ?„ë¡œê·¸ë¨</app-name>
+   <app-name lang="ja">ç§ã®?¢ãƒ—?ªã‚±?¼ã‚·?§ãƒ³</app-name>
+</resources>
+
+App name created without language code will be a default name.
+Follow that example, choose the language except on en, ko and ja, app name will be a "My App".
+So you want to make your app has only one name, please create only one app name on this file.
+
+2. Icon
+
+You can make a icon for each language(or DPI) to edit folder like "platforms/Android/resources/icon".
+Make folder "icon" , "icon.LANGUAGE_CODE" , "icon.DPI" or "icon.LANGUAGE_CODE-DPI" under "platforms/Android/resources/icon".
+Language code follows ISO 639-1 specification and Android also follows that specification.
+DPI was made up ldpi(low), mdpi(medium), hdpi(high) and xhdpi(extra high).
+Copy icon file to created folder using language code (or DPI).
+Icon file must be png file type and name must be "icon.png".
+Please see below.
+
+    platforms/Android/resources/icon/icon/icon.png
+    platforms/Android/resources/icon/icon.en/icon.png
+    platforms/Android/resources/icon/icon.ldpi/icon.png
+    platforms/Android/resources/icon/icon.ko/icon.png
+    platforms/Android/resources/icon/icon.ko-mdpi/icon.png
+    platforms/Android/resources/icon/icon.ja/icon.png
+    platforms/Android/resources/icon/icon.ja-hdpi/icon.png
+
+If you want to know more detailed information about icon, Please read below link from Android development reference.
+http://developer.android.com/guide/practices/ui_guidelines/icon_design_launcher.html
+Language code has higher priority than DPI.
+If there is two folders named "icon.en" and "icon.hdpi" when device language is en and device dpi is hdpi, then Android shows icon of "icon.en".
+Icon file in "icon" folder created without language code and DPI will be a default thing.
+Follow that example, choose the language(or DPI) different from example, icon will use "platforms/Android/resources/icon/icon/icon.png".
+So you want to make your app has only one icon, please delete another language (or DPI) icon folder and create only "platforms/Android/resources/icon/icon/icon.png"
+
+3. Splash image
+
+You can make a splash image for each language(or DPI) to edit folder like "platforms/Android/resources/splash".
+Make folder "splash","splash.LANGUAGE_CODE","splash.DPI" or "splash.LANGUAGE_CODE-DPI" under "platforms/Android/resources/splash".
+Language code follows ISO 639-1 specification and Android also follows that specification.
+DPI was made up ldpi(low), mdpi(medium), hdpi(high) and xhdpi(extra high).
+Copy splash file to created folder using language code (or DPI)
+Splash file must be png file type and name must be "splash.png" or "splash.9.png"(9 patch image type).
+Please see below.
+
+    platforms/Android/resources/splash/splash/splash.9.png
+    platforms/Android/resources/splash/splash.en/splash.png
+    platforms/Android/resources/splash/splash.ldpi/splash.png
+    platforms/Android/resources/splash/splash.ko/splash.png
+    platforms/Android/resources/splash/splash.ko-mdpi/splash.png
+    platforms/Android/resources/splash/splash.ja/splash.png
+    platforms/Android/resources/splash/splash.ja-hdpi/splash.png
+
+Language code has higher priority than DPI.
+If there is two folders named "splash.en" and "splash.hdpi" when device language is en and device dpi is hdpi, then Android shows splash image of "splash.en".
+Splash file in "splash" folder created without language code (or DPI) will be a default thing.
+Follow that example, choose the language(or DPI) different from example , splash will use "platforms/Android/resources/splash/splash/splash.png".
+So you want to make your app has only one splash image, please delete another language (or DPI) splash folder and create only "platforms/Android/resources/splash/splash/splash.png"
+
+Appspresso stretch the splash image to fit screen size.
+So it may occur splash image to strange thing that we seem.
+If you want to avoid this happen then you should make splash image using 9 patch image type.
+Please see below link from Android development reference, there's more information about 9 patch image.
+
+http://developer.android.com/guide/developing/tools/draw9patch.html
+
+
+
+Localization manual / ?¤êµ­??ì§?› ?¤ëª…??
+platforms/Android ?´ë”ë¥?êµ¬ì„±?˜ì—¬ ?´í”Œë¦¬ì??´ì…˜???´ë¦„, ?„ì´ì½? ?¤í”Œ?˜ì‹œ ?´ë?ì§?? ?¸ì–´ë³„ë¡œ ?¤ì •?????ˆìŠµ?ˆë‹¤.
+?ˆë¡œ???„ë¡œ?íŠ¸ë¥??ì„±????"Hello World (localization)" ?œí”Œë¦¿ì„ ? íƒ?˜ì—¬ ?„ë¡œ?íŠ¸ë¥??ì„±?˜ë©´ êµ¬ì„± ?ˆë? ë³????ˆìŠµ?ˆë‹¤.
+?´í”Œë¦¬ì??´ì…˜ ?´ë¦„, ?„ì´ì½? ?¤í”Œ?˜ì‹œ ?´ë?ì§??¸ì— ?´í”Œë¦¬ì??´ì…˜??ì»¨í…ì¸ ì— ??•œ ?¤êµ­??ì§?›??W3C Widget ê·œê²©???°ë¼ êµ¬ì„±?????ˆìœ¼ë©?Appspresso ?¬ì´?¸ì˜ ë³„ë„ ë¬¸ì„œ?ì„œ ?¤ëª…?©ë‹ˆ??
+
+1. ?´í”Œë¦¬ì??´ì…˜ ?´ë¦„
+
+?¸ì–´ë³„ë¡œ ?´í”Œë¦¬ì??´ì…˜???´ë¦„??ì§? •?˜ë ¤ë©?platforms/Android/resources/appName.xml ?Œì¼???¸ì§‘?©ë‹ˆ??
+?„ë˜???ˆì? ê°™ì´ ?¸ì–´ì½”ë“œë³„ë¡œ ?´í”Œë¦¬ì??´ì…˜???´ë¦„??ì§? •?©ë‹ˆ??
+?¸ì–´ì½”ë“œ??Androidê°?ì¤?ˆ˜?˜ê³  ?ˆëŠ” ISO 639-1 ê·œê²©???•ì˜???¸ì–´ì½”ë“œë¥??¬ìš©?©ë‹ˆ??
+
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+   <app-name>My App</app-name> <!-- Default App Name -->
+   <app-name lang="en">My Application</app-name>
+   <app-name lang="ko">???‘ìš© ?„ë¡œê·¸ë¨</app-name>
+   <app-name lang="ja">ç§ã®?¢ãƒ—?ªã‚±?¼ã‚·?§ãƒ³</app-name>
+</resources>
+
+?¸ì–´ì½”ë“œ ?†ì´ ì§? •???´í”Œë¦¬ì??´ì…˜ ?´ë¦„??ê¸°ë³¸ ?´í”Œë¦¬ì??´ì…˜ ?´ë¦„???©ë‹ˆ??
+???ˆì˜ ê²½ìš° en, ko, ja ?´ì™¸???¸ì–´ ?˜ê²½?ì„œ ?´í”Œë¦¬ì??´ì…˜???´ë¦„??ê¸°ë³¸ ?´í”Œë¦¬ì??´ì…˜ ?´ë¦„??"My App"???©ë‹ˆ??
+?°ë¼???¸ì–´??ê´?³„?†ì´ ?¨ì¼???´í”Œë¦¬ì??´ì…˜ ?´ë¦„???¬ìš©??ê²½ìš°?ëŠ” ê¸°ë³¸ ?´í”Œë¦¬ì??´ì…˜ ?´ë¦„ ?˜ë‚˜ë§??•ì˜?˜ë©´ ?©ë‹ˆ??
+
+2. ?„ì´ì½?
+platforms/Android/resources/icon ?´ë”ë¥?êµ¬ì„±?˜ì—¬ ?¸ì–´??DPIë³„ë¡œ ?„ì´ì½˜ì„ ì§? •?????ˆìŠµ?ˆë‹¤.
+platforms/Android/resources/icon ?´ë” ?„ë˜???¤ìŒê³?ê°™ì? ëª…ëª…ê·œì¹™???°ë¼ ?¸ì–´ë³? DPIë³??´ë”ë¥??ì„±?©ë‹ˆ??
+"icon"(ê¸°ë³¸), "icon.?¸ì–´ì½”ë“œ", "icon.DPI", "icon.?¸ì–´ì½”ë“œ-DPI"
+?¸ì–´ì½”ë“œ??Androidê°?ì¤?ˆ˜?˜ê³  ?ˆëŠ” ISO 639-1 ê·œê²©???•ì˜???¸ì–´ì½”ë“œë¥??¬ìš©?©ë‹ˆ??
+DPI??"ldpi"(low), "mdpi"(medium), "hdpi"(high), "xhdpi"(extra high)ë¡?êµ¬ë¶„?©ë‹ˆ??
+
+?ì„±???¸ì–´ë³? DPIë³??´ë”???„ì´ì½??Œì¼??ë³µì‚¬???£ìŠµ?ˆë‹¤.
+?„ì´ì½??Œì¼???•ì‹??ë°˜ë“œ??png ?•ì‹?´ì–´???˜ë©° ?´ë¦„??ë°˜ë“œ??"icon.png"?´ì–´???©ë‹ˆ??
+?ˆë??¤ë©´ ?„ë˜??ê°™ìŠµ?ˆë‹¤.
+
+    platforms/Android/resources/icon/icon/icon.png
+    platforms/Android/resources/icon/icon.en/icon.png
+    platforms/Android/resources/icon/icon.ldpi/icon.png
+    platforms/Android/resources/icon/icon.ko/icon.png
+    platforms/Android/resources/icon/icon.ko-mdpi/icon.png
+    platforms/Android/resources/icon/icon.ja/icon.png
+    platforms/Android/resources/icon/icon.ja-hdpi/icon.png
+
+?„ì´ì½˜ì— ??•œ ë³´ë‹¤ ?ì„¸???•ë³´???„ë˜ ë§í¬??Android ë¬¸ì„œë¥?ì°¸ì¡°?˜ì‹œê¸?ë°”ë?ˆë‹¤.
+http://developer.android.com/guide/practices/ui_guidelines/icon_design_launcher.html
+?¸ì–´ì½”ë“œ??DPIê°??ëµ??"icon" ?´ë”????¥???„ì´ì½??Œì¼??ê¸°ë³¸ ?„ì´ì½˜ì´ ?©ë‹ˆ??
+?¨ë§ê¸°ì˜ ?¸ì–´???¨ë§ê¸°ì˜ DPI????‘?˜ëŠ” ?´ë”ê°??†ì„ ê²½ìš° "icon" ?´ë”????¥??ê¸°ë³¸ ?„ì´ì½˜ì´ ?¬ìš©?©ë‹ˆ??
+?°ë¼???¸ì–´??DPI??ê´?³„?†ì´ ?˜ë‚˜???„ì´ì½??Œì¼???¬ìš©?˜ëŠ” ê²½ìš°?ëŠ” ?¤ë¥¸ ?„ì´ì½??´ë”ê°??ˆë‹¤ë©??? œ?˜ê³  platforms/Android/resources/icon/icon/icon.png ?Œì¼ ?˜ë‚˜ë§???¥?©ë‹ˆ??
+
+3. ?¤í”Œ?˜ì‹œ ?´ë?ì§?
+platforms/Android/resources/splash ?´ë”ë¥?êµ¬ì„±?˜ì—¬ ?¸ì–´??DPIë³„ë¡œ ?¤í”Œ?˜ì‹œ ?´ë?ì§?? ì§? •?????ˆìŠµ?ˆë‹¤.
+platforms/Android/resources/splash ?´ë” ?„ë˜???¤ìŒê³?ê°™ì? ëª…ëª…ê·œì¹™???°ë¼ ?¸ì–´ë³? DPIë³??´ë”ë¥??ì„±?©ë‹ˆ??
+"splash"(ê¸°ë³¸), "splash.?¸ì–´ì½”ë“œ", "splash.DPI", "splash.?¸ì–´ì½”ë“œ-DPI"
+?¸ì–´ì½”ë“œ??Androidê°?ì¤?ˆ˜?˜ê³  ?ˆëŠ” ISO 639-1 ê·œê²©???•ì˜???¸ì–´ì½”ë“œë¥??¬ìš©?©ë‹ˆ??
+DPI??"ldpi"(low), "mdpi"(medium), "hdpi"(high), "xhdpi"(extra high)ë¡?êµ¬ë¶„?©ë‹ˆ??
+
+?ì„±???¸ì–´ë³? DPIë³??´ë”???¤í”Œ?˜ì‹œ ?´ë?ì§??Œì¼??ë³µì‚¬???£ìŠµ?ˆë‹¤.
+?¤í”Œ?˜ì‹œ ?´ë?ì§??Œì¼???•ì‹??ë°˜ë“œ??png ?•ì‹?´ì–´???˜ë©° ?´ë¦„??ë°˜ë“œ??"splash.png" ?¹ì? "splash.9.png"(9 ?¨ì¹˜ ?´ë?ì§?¸ ê²½ìš°)?´ì–´???©ë‹ˆ??
+?ˆë??¤ë©´ ?„ë˜??ê°™ìŠµ?ˆë‹¤.
+
+    platforms/Android/resources/splash/splash/splash.9.png
+    platforms/Android/resources/splash/splash.en/splash.png
+    platforms/Android/resources/splash/splash.ldpi/splash.png
+    platforms/Android/resources/splash/splash.ko/splash.png
+    platforms/Android/resources/splash/splash.ko-mdpi/splash.png
+    platforms/Android/resources/splash/splash.ja/splash.png
+    platforms/Android/resources/splash/splash.ja-hdpi/splash.png
+
+?¸ì–´ì½”ë“œ??DPIê°??ëµ??"splash" ?´ë”????¥???¤í”Œ?˜ì‹œ ?´ë?ì§??Œì¼??ê¸°ë³¸ ?¤í”Œ?˜ì‹œ ?´ë?ì§?? ?©ë‹ˆ??
+?¨ë§ê¸°ì˜ ?¸ì–´???¨ë§ê¸°ì˜ DPI????‘?˜ëŠ” ?´ë”ê°??†ì„ ê²½ìš° "splash" ?´ë”????¥??ê¸°ë³¸ ?¤í”Œ?˜ì‹œ ?´ë?ì§??Œì¼???¬ìš©?©ë‹ˆ??
+?°ë¼???¸ì–´??DPI??ê´?³„?†ì´ ?˜ë‚˜???¤í”Œ?˜ì‹œ ?Œì¼???¬ìš©?˜ëŠ” ê²½ìš°?ëŠ” ?¤ë¥¸ ?¤í”Œ?˜ì‹œ ?´ë”ê°??ˆë‹¤ë©??? œ?˜ê³  platforms/Android/resources/splash/splash/splash.png ?Œì¼ ?˜ë‚˜ë§???¥?©ë‹ˆ??
+?¤í”Œ?˜ì‹œ ?´ë?ì§?Š” ?¤í¬ë¦°ì— ê½‰ì°¨?„ë¡ ?•ë?/ì¶•ì†Œ?˜ì–´ ë³´ì—¬ì§?²Œ ?˜ë?ë¡??¤í¬ë¦°ì˜ ì¢…íš¡ë¹„ì— ?°ë¼ ?¤í”Œ?˜ì‹œ ?´ë?ì§?? ?œê³¡?????ˆìŠµ?ˆë‹¤.
+ì¢…íš¡ë¹„ì— ?°ë¥¸ ?´ë?ì§??œê³¡ ?„ìƒ???¼í•˜?¤ë©´ ?¤í”Œ?˜ì‹œ ?´ë?ì§?? 9 ?¨ì¹˜ ?´ë?ì§?¡œ ë§Œë“œ?œê¸° ë°”ë?ˆë‹¤.
+9 ?¨ì¹˜ ?´ë?ì§?— ??•œ ?ì„¸???•ë³´???„ë˜ ë§í¬??Android ë¬¸ì„œë¥?ì°¸ì¡°?˜ì‹œê¸?ë°”ë?ˆë‹¤.
+http://developer.android.com/guide/developing/tools/draw9patch.html
