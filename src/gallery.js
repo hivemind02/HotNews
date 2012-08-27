@@ -1,3 +1,4 @@
+$require("/categories.js");
 $require("/article.js");
 $require('http://www.google.com/jsapi');
 
@@ -10,7 +11,8 @@ $class('hotnews.Gallery')
       },
 
       Gallery: function (opts) {
-        this.setTitle('Hot News');
+        this.setTitle(opts.title);
+        this.url = opts.url;
         this.data = [];
         this.feed;
         this.scrollPanel;
@@ -18,8 +20,8 @@ $class('hotnews.Gallery')
         // 2 1
         // 1 2
         // 1 1 1
-        this.sizeVals = ['100%', '66.6%', '33.3%', '33.3%', '66.6%'];
-        // this.sizeVals = ['100%'];
+        // this.sizeVals = ['100%', '66.6%', '33.3%', '33.3%', '66.6%'];
+        this.sizeVals = ['100%'];
       },
 
       loadScene: function () {
@@ -30,6 +32,26 @@ $class('hotnews.Gallery')
           }
         });
         this.getScene().add(this.scrollPanel);
+
+        var nav = this.getNavigationBar();
+        var navBtn = new tau.ui.Button({
+          styles: {
+            marginLeft: '10px',
+            width: '38px',
+            backgroundImage: 'url("/img/navBtn.png")',
+            display: '-webkit-box',
+          },
+          styleClass: {
+            type: 'sanmarino'
+          },
+        });
+        navBtn.onEvent('tap', this.navBtnTapped, this);
+        // nav.setLeftItem(navBtn);
+      },
+
+      navBtnTapped: function () {
+        var navigator = this.getParent();
+        navigator.pushController(new hotnews.Categories());
       },
 
       sceneLoaded: function () {
@@ -39,13 +61,15 @@ $class('hotnews.Gallery')
         google.load("feeds", "1", {
           "callback": tau.ctxAware(onLoad, this)
         });
-        // this.scrollPanel.renderer.addStyleRule(this.scrollPanel.getId(true),'*','font-family: "맑은 고딕"');
-        this.scrollPanel.renderer.addStyleRule(this.scrollPanel.getId(true),'.tau-label-text','overflow: visible');
+        // this.scrollPanel.renderer.addStyleRule(this.scrollPanel.getId(true),'*','font-family:
+        // "맑은 고딕"');
+        this.scrollPanel.renderer
+            .addStyleRule(this.scrollPanel.getId(true), '.tau-label-text', 'overflow: visible');
       },
 
       loadModel: function () {
         if (!this.feed) {
-          this.feed = new google.feeds.Feed("http://mobileblog.olleh.com/rss");
+          this.feed = new google.feeds.Feed(this.url);
 
           function feedLoaded (result) {
             if (!result.error && result.feed) {
@@ -111,12 +135,12 @@ $class('hotnews.Gallery')
         description.dArticleIndex = index;
         this.scrollPanel.add(panel);
       },
-      articleSelected: function(e, payload) {
+      articleSelected: function (e, payload) {
         var source = e.getSource();
         var index = source.dArticleIndex;
         var article = this.data[index];
         var navigator = this.getParent();
         navigator.pushController(new hotnews.Article(article));
       },
-      
+
     });
