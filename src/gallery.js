@@ -1,39 +1,29 @@
 $require("/categories.js");
+$require("/reader.js");
 $require("/article.js");
-$require('http://www.google.com/jsapi');
+
 
 $class('hotnews.Gallery')
     .extend(tau.ui.SceneController)
     .define({
 
-      $static: {
-        EVENT_LIB_LOADED: 'googleLibLoaded'
-      },
-
       Gallery: function (category) {
         this.setTitle(category.title);
         this.url = category.url;
+        this.feed;
         this.data = [];
         this.layout = category.layout;
-        this.feed;
         this.scrollPanel;
-        if (this.layout == 'list' || this.layout == 'list_detail'
-            || this.layout == 'list_img') {
-          this.sizeVals = ['100%'];
-        } else {
-          // 3
-          // 2 1
-          // 1 2
-          // 1 1 1
-          this.sizeVals = ['100%', '66.6%', '33.3%', '33.3%', '66.6%'];
-        }
       },
 
       loadScene: function () {
         this.scrollPanel = new tau.ui.ScrollPanel({
+          // refresh 기능은 다음에 구현한다.
+          // pullToRefresh: 'down',
+          // pullDownFn: tau.ctxAware(this.loadModel, this),
+          // pullDownLabel: ['업데이트하시려면 아래로 당기세요.', '업데이트하시려면 당겼다 놓으세요.', '업데이트중...'],
           styles: {
             fontSize: '15px',
-           // padding: '10px',
           }
         });
         this.getScene().add(this.scrollPanel);
@@ -45,46 +35,42 @@ $class('hotnews.Gallery')
       },
 
       sceneLoaded: function () {
-        function onLoad () {
-          this.loadModel();
-        }
-        google.load("feeds", "1", {
-          "callback": tau.ctxAware(onLoad, this)
-        });
-        // this.scrollPanel.renderer.addStyleRule(this.scrollPanel.getId(true),'*','font-family: "맑은 고딕"');
+        // adjust theme 
         this.scrollPanel.renderer
             .addStyleRule(this.scrollPanel.getId(true), '.tau-label-text', 'overflow: visible');
+        
+        // load feed
+        this.loadModel();
       },
 
       loadModel: function () {
+        // feed
         if (!this.feed) {
-          this.feed = new google.feeds.Feed(this.url);
-
-          function feedLoaded (result) {
-            if (!result.error && result.feed) {
-              var entries = result.feed.entries;
-              this.data = this.data.concat(entries);
-              this
-                  .addCells(this.data.length - entries.length, entries ? entries.length
-                      : 0);
-            }
-          }
+          // if use google
+          this.feed = new hotnews.GoogleFeed(this.url);
         }
-
-        this.feed.setNumEntries(100);
-        this.feed.load(tau.ctxAware(feedLoaded, this));
-        this.feed.load(tau.ctxAware(feedLoaded, this));
+        this.feed.load(tau.ctxAware(this.modelLoaded, this));
       },
 
-      addCells: function (index, length) {
-        for ( var i = index, end = index + length; i < end; i++) {
+      modelLoaded: function (entries) {
+        if(this.data.length == 0) {
+          // 처음 load 할 때에는 순서대로 뒤에 붙인다.
+          this.data = this.data.concat(entries);
+          this.addCells(entries.length);
+        } else {
+          // refresh 해서 새글이 추가되면 앞에 붙여 주어야 한다.
+        }
+      },
+
+      addCells: function (length) {
+        for ( var i = 0; i < length; i++) {
           this.loadCell(i);
         }
         this.getScene().update();
       },
 
       loadCell: function (index) {
-        var sizeVal = this.sizeVals[index % this.sizeVals.length];
+        var sizeVal = this.getColWidth(index);
         var article = this.data[index];
         var panelStyle = {
           width: sizeVal,
@@ -93,9 +79,13 @@ $class('hotnews.Gallery')
           paddingLeft: '10px',
           borderBottom: '1px solid #BFBFBD',
           display: '-webkit-box',
-          '-webkit-box-orient':'horizontal',
-          '-webkit-box-align': (this.layout != 'list' && this.layout != 'list_detail') ? 'center' : 'start',
+          '-webkit-box-orient': 'horizontal',
+          '-webkit-box-align': (this.layout != 'list' && this.layout != 'list_detail') ? 'center'
+              : 'start',
         };
+        if (index != 0) {
+          panelStyle.borderTop = '1px solid #F2F2F0';
+        }
         if (this.layout == 'list') {
           panelStyle.height = '45px';
         }
@@ -111,14 +101,11 @@ $class('hotnews.Gallery')
             panelStyle.color = 'white';
           }
         }
-
-        if (index != 0) {
-          panelStyle.borderTop = '1px solid #F2F2F0';
-        }
         var panel = new tau.ui.Panel({
           styles: panelStyle,
         });
-        
+
+        // img
         if (this.layout == 'list_img') {
           var imgSrc = this.getImgSrc(article);
           if (imgSrc) {
@@ -127,34 +114,36 @@ $class('hotnews.Gallery')
               styles: {
                 width: '96px',
                 marginRight: '10px',
-                '-webkit-border-radius' : '5px',
+                '-webkit-border-radius': '5px',
               }
             });
-            imageView.dArticleIndex = index;
             panel.add(imageView);
           }
         }
+        //panel2 (for title and desc)
         var panel2Styles = {
-            '-webkit-box-flex' : '1',
-          };
-        if(this.layout != 'list' && this.layout != 'list_detail') {
+          '-webkit-box-flex': '1',
+          display: 'block',
+        };
+        if (this.layout != 'list' && this.layout != 'list_detail') {
           panel2Styles.paddingRight = '3px';
         }
         var panel2 = new tau.ui.Panel({
           styles: panel2Styles,
         });
         panel.add(panel2);
+        // title
         var title = new tau.ui.Label({
           text: article.title,
           styles: {
             display: 'block',
             fontWeight: 'bold',
-           marginTop: '5px',
+            marginTop: '5px',
             marginBottom: '6px',
           }
         });
-        
         panel2.add(title);
+        // description
         if (this.layout != 'list' && sizeVal != '33.3%') {
           var description = new tau.ui.Label({
             text: article.contentSnippet.replace(/(\r\n|\n|\r)/gm, ""),
@@ -162,27 +151,33 @@ $class('hotnews.Gallery')
               fontSize: '80%',
               display: 'block',
               overflow: 'visible',
+              whiteSpace: 'normal',
             }
           });
           panel2.add(description);
         }
-        
-
         panel.onEvent('tap', this.articleSelected, this);
         panel.dArticleIndex = index;
-        title.dArticleIndex = index;
-        if (description)
-          description.dArticleIndex = index;
         this.scrollPanel.add(panel);
       },
+
       articleSelected: function (e, payload) {
         var source = e.getSource();
-        var index = source.dArticleIndex;
+        var index = this.getArticleIndex(source);
         if (index != undefined) {
-          var article = this.data[index];
           var navigator = this.getParent();
-          navigator.pushController(new hotnews.Article(article));
+          navigator.pushController(new hotnews.Article(this.data, index, this
+              .getTitle()));
         }
+      },
+
+      getArticleIndex: function (comp) {
+        while (comp && comp.dArticleIndex == undefined) {
+          if (!comp.getParent)
+            return;
+          comp = comp.getParent();
+        }
+        return comp.dArticleIndex;
       },
 
       getImgSrc: function (article) {
@@ -191,6 +186,21 @@ $class('hotnews.Gallery')
         var result = reg.exec(content);
         if (result)
           return result[1];
+      },
+
+      getColWidth: function (index) {
+        var widths;
+        // one column
+        if (this.layout == 'list' || this.layout == 'list_detail'
+            || this.layout == 'list_img') {
+          widths = ['100%'];
+        } else {
+          // 3
+          // 2 1
+          // 1 2
+          widths = ['100%', '66.6%', '33.3%', '33.3%', '66.6%'];
+        }
+        return widths[index % widths.length]
       },
 
     });
