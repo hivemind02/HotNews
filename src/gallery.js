@@ -1,5 +1,6 @@
 $require("/categories.js");
-$require("/reader.js");
+$require("/google_feed.js");
+$require("/my_feed.js");
 $require("/article.js");
 
 
@@ -8,11 +9,10 @@ $class('hotnews.Gallery')
     .define({
 
       Gallery: function (category) {
-        this.setTitle(category.title);
-        this.url = category.url;
+        this.setTitle(category.name);
+        this.category = category;
         this.feed;
         this.data = [];
-        this.layout = category.layout;
         this.scrollPanel;
       },
 
@@ -47,7 +47,12 @@ $class('hotnews.Gallery')
         // feed
         if (!this.feed) {
           // if use google
-          this.feed = new hotnews.GoogleFeed(this.url);
+          var serverParam = tau.getLauncherParam('feed');
+          if(serverParam == 'myfeed') {
+            this.feed = new hotnews.MyFeed(this.category);
+          } else {
+            this.feed = new hotnews.GoogleFeed(this.category.url);
+          }
         }
         this.feed.load(tau.ctxAware(this.modelLoaded, this));
       },
@@ -70,6 +75,7 @@ $class('hotnews.Gallery')
       },
 
       loadCell: function (index) {
+        var layout = this.category.layout;
         var sizeVal = this.getColWidth(index);
         var article = this.data[index];
         var panelStyle = {
@@ -80,19 +86,19 @@ $class('hotnews.Gallery')
           borderBottom: '1px solid #BFBFBD',
           display: '-webkit-box',
           '-webkit-box-orient': 'horizontal',
-          '-webkit-box-align': (this.layout != 'list' && this.layout != 'list_detail') ? 'center'
+          '-webkit-box-align': (layout != 'list' && layout != 'list_detail') ? 'center'
               : 'start',
         };
         if (index != 0) {
           panelStyle.borderTop = '1px solid #F2F2F0';
         }
-        if (this.layout == 'list') {
+        if (layout == 'list') {
           panelStyle.height = '45px';
         }
-        if (this.layout == 'list_detail') {
+        if (layout == 'list_detail') {
           panelStyle.height = '90px';
         }
-        if (this.layout == 'gallery') {
+        if (layout == 'gallery') {
           panelStyle.paddingLeft = '0px';
           var imgSrc = this.getImgSrc(article);
           if (imgSrc) {
@@ -106,7 +112,7 @@ $class('hotnews.Gallery')
         });
 
         // img
-        if (this.layout == 'list_img') {
+        if (layout == 'list_img') {
           var imgSrc = this.getImgSrc(article);
           if (imgSrc) {
             var imageView = new tau.ui.ImageView({
@@ -125,7 +131,7 @@ $class('hotnews.Gallery')
           '-webkit-box-flex': '1',
           display: 'block',
         };
-        if (this.layout != 'list' && this.layout != 'list_detail') {
+        if (layout != 'list' && layout != 'list_detail') {
           panel2Styles.paddingRight = '3px';
         }
         var panel2 = new tau.ui.Panel({
@@ -144,9 +150,13 @@ $class('hotnews.Gallery')
         });
         panel2.add(title);
         // description
-        if (this.layout != 'list' && sizeVal != '33.3%') {
+        if (layout != 'list' && sizeVal != '33.3%') {
+          var contentSnippet = article.contentSnippet.replace(/(\r\n|\n|\r)/gm, "");
+          if(contentSnippet.length > 200) {
+            contentSnippet = contentSnippet.substring(0, 200) + '[..]';
+          }
           var description = new tau.ui.Label({
-            text: article.contentSnippet.replace(/(\r\n|\n|\r)/gm, ""),
+            text: contentSnippet,
             styles: {
               fontSize: '80%',
               display: 'block',
@@ -181,6 +191,8 @@ $class('hotnews.Gallery')
       },
 
       getImgSrc: function (article) {
+        if(article.imageUrl)
+          return article.imageUrl;
         var content = article.content;
         var reg = new RegExp("<img[^>]+src\\s*=\\s*['\"]([^'\"]+)['\"][^>]*>");
         var result = reg.exec(content);
@@ -191,8 +203,9 @@ $class('hotnews.Gallery')
       getColWidth: function (index) {
         var widths;
         // one column
-        if (this.layout == 'list' || this.layout == 'list_detail'
-            || this.layout == 'list_img') {
+        var layout = this.category.layout;
+        if (layout == 'list' || layout == 'list_detail'
+            || layout == 'list_img') {
           widths = ['100%'];
         } else {
           // 3

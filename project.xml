@@ -4,8 +4,8 @@
      <widget id="http://mobello/HotNews" version="0.1">
           <name>HotNews</name>
           <content src="launcher.html?app=HotNews"/>
-		<feature name="http://wacapps.net/api/deviceapis"/>
           <icon src="icon.png"/>
+          <feature name="http://wacapps.net/api/deviceapis"/>
      </widget>
      <wac min-version="2.0"/>
      <android id="mobello.HotNews" version="0.1">
@@ -22,7 +22,7 @@
           <preference name="defaultZoom" value="MEDIUM"/>
           <preference name="zoom.enable" value="false"/>
           <preference name="zoom.control" value="false"/>
-          <preference name="splash.enable" value="true"/>
+          <preference name="splash.enable" value="false"/>
           <preference name="splash.orientation" value="0"/>
           <preference name="splash.duration.min" value="0"/>
           <preference name="splash.duration.max" value="0"/>

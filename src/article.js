@@ -1,3 +1,4 @@
+$require("/my_feed.js");
 $class('hotnews.Article')
     .extend(tau.ui.SceneController)
     .define({
@@ -29,7 +30,6 @@ $class('hotnews.Article')
           }
         });
         var starBtn = new tau.ui.Button({
-          tap: tau.ctxAware(this.star, this),
           label: {
             normal: ""
           },
@@ -40,6 +40,7 @@ $class('hotnews.Article')
             backgroundImage: 'url("/img/heart@2x.png")',
           }
         });
+        starBtn.onEvent('tap',this.star, this);
         toolbar.add(starBtn);
 
         var shareBtn = new tau.ui.Button({
@@ -56,7 +57,6 @@ $class('hotnews.Article')
         toolbar.add(shareBtn);
 
         var prevButton = new tau.ui.Button({
-          tap: tau.ctxAware(this.goPrev, this),
           label: {
             normal: ""
           },
@@ -67,10 +67,10 @@ $class('hotnews.Article')
             backgroundImage: 'url("/img/prev@2x.png")',
           }
         });
+        prevButton.onEvent('tap',this.goPrev, this);
         toolbar.add(prevButton);
 
         var nextButton = new tau.ui.Button({
-          tap: tau.ctxAware(this.goNext, this),
           label: {
             normal: ""
           },
@@ -81,6 +81,7 @@ $class('hotnews.Article')
             backgroundImage: 'url("/img/next@2x.png")',
           }
         });
+        nextButton.onEvent('tap', this.goNext, this);
         toolbar.add(nextButton);
 
         scene.add(toolbar);
@@ -91,9 +92,14 @@ $class('hotnews.Article')
             .addStyleRule(this.textView.getId(true), 'img', 'max-width: 100%; height: auto;');
         this.textView.renderer
             .addStyleRule(this.textView.getId(true), 'span', 'max-width: 100%; height: auto;');
-
+        this.textView.renderer
+        .addStyleRule(this.textView.getId(true), 'td > span', 'width: auto;');
+        this.textView.renderer
+        .addStyleRule(this.textView.getId(true), 'table', 'max-width: 100%; height: auto;');
+        this.textView.renderer
+        .addStyleRule(this.textView.getId(true), 'div', 'max-width: 100%; height: auto;');
+        
         var browserBtn = new tau.ui.Button({
-          tap: tau.ctxAware(this.openBrowser, this),
           label: {
             normal: ""
           },
@@ -105,7 +111,7 @@ $class('hotnews.Article')
             marginRight: '6px',
           }
         });
-
+        browserBtn.onEvent('tap', this.openBrowser, this);
         var navBar = this.getNavigationBar();
         navBar.setRightItem(browserBtn);
       },
@@ -131,7 +137,9 @@ $class('hotnews.Article')
       },
 
       star: function () {
-        tau.alert('Starred! id: ' + this.data[this.index].id);
+        if (tau.getLauncherParam('feed') == 'myfeed') {
+          hotnews.Server.star(this.data[this.index].id);
+        }
       },
 
     });

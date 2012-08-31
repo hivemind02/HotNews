@@ -1,3 +1,5 @@
+$require("/my_feed.js");
+$require("/google_feed.js");
 $require("/gallery.js");
 $class('hotnews.Categories').extend(tau.ui.SceneController).define({
   Categories: function () {
@@ -5,62 +7,11 @@ $class('hotnews.Categories').extend(tau.ui.SceneController).define({
   },
 
   init: function () {
-    this.categories = [{
-      id: 'top',
-      title: 'Top Stories',
-      url: 'http://mobileblog.olleh.com/rss',
-      layout: 'list_img',
-    },
-    {
-      id: 'ffff',
-      title: 'FFFFoud',
-      url: 'http://feeds.feedburner.com/ffffound/everyone',
-      layout: 'gallery',
-    },
-    {
-      id: 'dyt',
-      title: 'Design You Trust',
-      url: 'http://designyoutrust.com/feed/',
-      layout: 'gallery',
-    },
-    {
-      id: 'fubiz',
-      title: 'Fubiz',
-      url: 'http://feeds.feedburner.com/fubiz',
-      layout: 'gallery',
-    },
-    {
-      id: 'wishlist',
-      title: 'Wishlist',
-      url: 'http://wishlist.soup.io/rss',
-      layout: 'gallery',
-    },{
-      id: 'mmm',
-      title: 'Modern Metropolis',
-      url: 'http://www.mymodernmet.com/profiles/blog/feed?promoted=1&xn_auth=no',
-      layout: 'gallery',
-    },
-    {
-      id: 'design',
-      title: 'Design',
-      url: 'http://dribbble.com/shots/popular.rss',
-      layout: 'gallery',
-    }, {
-      id: 'web',
-      title: 'Web',
-      url: 'http://feeds.feedburner.com/devparan',
-      layout: 'newsify',
-    }, {
-      id: 'java',
-      title: 'Java',
-      url: 'http://www.okjsp.pe.kr/rss/okjsp-rss2.jsp?bbs=bbs6',
-      layout: 'list_detail',
-    }, {
-      id: 'eclipse',
-      title: 'Eclipse',
-      url: 'http://cafe.rss.naver.com/eclipseplugin',
-      layout: 'list',
-    }];
+    if (tau.getLauncherParam('feed') == 'myfeed') {
+      this.categories = hotnews.Server.loadCategories();
+    } else {
+      this.categories = hotnews.GoogleFeed.CATEGORIES;
+    }
   },
 
   loadScene: function () {
@@ -84,7 +35,7 @@ $class('hotnews.Categories').extend(tau.ui.SceneController).define({
   loadCell: function (e, payload) {
     var index = payload.index;
     var cell = new tau.ui.TableCell({
-      title: this.categories[index].title,
+      title: this.categories[index].name,
     });
     this.table.add(cell);
   },
